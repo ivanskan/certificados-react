@@ -1,0 +1,77 @@
+/* Reutilizamos el mismo tamaño que certificate */
+.syllabus-content {
+  position: relative;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Marca de agua con opacidad */
+.syllabus-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../public/assets/marca.png") center center no-repeat;
+  background-size: 60%; /* igual que certificado */
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.syllabus-header,
+.syllabus-body {
+  position: relative;
+  z-index: 1; /* encima de la marca */
+}
+
+.syllabus-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.syllabus-header h2 {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.syllabus-header h3 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 10px 0 0 0;
+}
+
+.syllabus-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 60px; /* separación entre columnas */
+  position: relative;
+  z-index: 1;
+}
+
+.syllabus-column {
+  flex: 1;
+}
+
+.syllabus-column p {
+  font-size: 16px;
+  margin: 5px 0;
+  white-space: normal;
+}
+
+.syllabus-list {
+  column-count: 2;           /* divide en 2 columnas */
+  column-gap: 50px;          /* espacio entre columnas */
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
+  list-style-position: inside;
+}

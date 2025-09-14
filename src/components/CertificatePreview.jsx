@@ -17,7 +17,7 @@ export default function CertificatePreview({ data, preview = false }) {
         <p className="fs-5">{data?.["TEXTO CURSO"] || "Texto curso"}</p>
         <p className="fs-5 fw-semibold">{data?.["TEXTO FECHA"] || "Fecha y lugar"}</p>
 
-        <div className="datos-extra fs-5">
+        <div className="datos-extra fs-5 mt-1">
           <div className="text-start fw-semibold lh-1">
             <p>Nro. Sesión</p>
             <p>Duración</p>
@@ -32,7 +32,7 @@ export default function CertificatePreview({ data, preview = false }) {
             <p>: {data?.["NRO CERTIFICADO"] || ""}</p>
             <p>: {data?.["MODALIDAD"] || ""}</p>
             <p>: {data?.["VIGENCIA"] || ""}</p>
-            <p className="empresa-text over" >: {data?.["EMPRESA"] || ""}</p>
+            <p className="text-capitalize" >: {data?.["EMPRESA"] || ""}</p>
           </div>
         </div>
 

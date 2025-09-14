@@ -71,7 +71,6 @@
 .datos-extra {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
 }
 
 .datos-extra p {

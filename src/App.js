@@ -5,8 +5,10 @@ import html2canvas from "html2canvas";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import CertificatePreview from "./components/CertificatePreview";
-import { createRoot } from "react-dom/client";
+import SyllabusPreview from "./components/SyllabusPreview";
+import syllabusData from "./data/syllabus.json";
 import "./Certificate.css";
+import "./Syllabus.css";
 
 function App() {
   const [rows, setRows] = useState([]);
@@ -20,7 +22,7 @@ function App() {
     const sheet = wb.Sheets[wb.SheetNames[0]];
     const json = XLSX.utils.sheet_to_json(sheet);
 
-    // ✅ normalizar keys
+    // normalizamos keys
     const normalized = json.map((row) => {
       const newRow = {};
       for (const key in row) {
@@ -41,49 +43,55 @@ function App() {
       const row = rows[i];
       setStatus(`Generando ${i + 1}/${rows.length}...`);
 
-      // 🔹 crear contenedor temporal
-      const container = document.createElement("div");
-      container.style.width = "1123px"; // A4 apaisado
-      container.style.height = "794px";
-      container.style.position = "absolute";
-      container.style.top = "-9999px"; // oculto
-      document.body.appendChild(container);
-
-      // 🔹 renderizar certificado
-      const root = createRoot(container);
-      root.render(<CertificatePreview data={row} />);
-
-      // 🔹 esperar a que React pinte
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // 🔹 capturar con html2canvas
-      const canvas = await html2canvas(container, { scale: 2 });
-      const imgData = canvas.toDataURL("image/png");
-
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "px",
-        format: "a4",
-      });
+      // crea PDF
+      const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: "a4" });
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData, "PNG", 0, 0, pageW, pageH);
 
-      const empresa = (row["EMPRESA"] || "SIN_EMPRESA").replace(
-        /[^a-z0-9_ -]/gi,
-        "_"
-      );
-      const nombre = (row["NOMBRE"] || "SIN_NOMBRE").replace(
-        /[^a-z0-9_ -]/gi,
-        "_"
-      );
+      // ===== Página 1: Certificado =====
+      const certEl = document.getElementById("certTemplate");
+      const certCanvas = await html2canvas(certEl, { scale: 2 });
+      const certImg = certCanvas.toDataURL("image/png");
+      pdf.addImage(certImg, "PNG", 0, 0, pageW, pageH);
 
+      // ===== Página 2: Temario =====
+      const curso = row?.["CURSO"] || "";
+      const temas = syllabusData[curso] || [];
+
+      if (temas.length > 0) {
+        pdf.addPage("a4", "landscape");
+
+        // renderizamos el temario dinámico en el DOM oculto
+        const tempNode = document.createElement("div");
+        tempNode.style.position = "absolute";
+        tempNode.style.left = "-9999px";
+        document.body.appendChild(tempNode);
+
+        const syllabusHtml = (
+          <SyllabusPreview curso={curso} temas={temas} preview />
+        );
+
+        // usamos React para montar el componente dentro del div temporal
+        const { createRoot } = await import("react-dom/client");
+        const root = createRoot(tempNode);
+        root.render(syllabusHtml);
+
+        await new Promise((resolve) => setTimeout(resolve, 300)); // un pequeño delay
+
+        const temarioEl = document.getElementById("temarioTemplate");
+        const temarioCanvas = await html2canvas(temarioEl, { scale: 2 });
+        const temarioImg = temarioCanvas.toDataURL("image/png");
+        pdf.addImage(temarioImg, "PNG", 0, 0, pageW, pageH);
+
+        root.unmount();
+        document.body.removeChild(tempNode);
+      }
+
+      // ===== Guardar en ZIP =====
+      const empresa = (row["EMPRESA"] || "SIN_EMPRESA").replace(/[^a-z0-9_ -]/gi, "_");
+      const nombre = (row["NOMBRE"] || "SIN_NOMBRE").replace(/[^a-z0-9_ -]/gi, "_");
       const ab = await pdf.output("arraybuffer");
       zip.folder(empresa).file(`${nombre}.pdf`, ab);
-
-      // 🔹 limpiar
-      root.unmount();
-      document.body.removeChild(container);
     }
 
     const zipBlob = await zip.generateAsync({ type: "blob" });
@@ -93,7 +101,7 @@ function App() {
 
   return (
     <div className="container py-4">
-      <h2 className="mb-3">Generador de Certificados</h2>
+      <h2 className="mb-3">Generador de Certificados + Temario</h2>
       <div className="d-flex gap-2 align-items-center flex-wrap mb-3">
         <input
           type="file"
@@ -108,8 +116,9 @@ function App() {
         <span>{status}</span>
       </div>
 
-      {/* 🔹 vista previa del primer certificado */}
-      {rows.length > 0 && <CertificatePreview data={rows[0]} preview />}
+      {/* Previews (solo el primero para revisar) */}
+      <CertificatePreview data={rows[0] || {}} preview />
+      <SyllabusPreview curso={rows[0]?.["CURSO"]} temas={syllabusData[rows[0]?.["CURSO"]] || []} preview />
     </div>
   );
 }
