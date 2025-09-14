@@ -17,7 +17,7 @@ export default function CertificatePreview({ data, preview = false }) {
         <p className="fs-5">{data?.["TEXTO CURSO"] || "Texto curso"}</p>
         <p className="fs-5 fw-semibold">{data?.["TEXTO FECHA"] || "Fecha y lugar"}</p>
 
-        <div className="datos-extra fs-5 mt-1">
+        <div className="datos-extra d-flex fs-5 mt-1">
           <div className="text-start fw-semibold lh-1">
             <p>Nro. Sesión</p>
             <p>Duración</p>
@@ -32,7 +32,7 @@ export default function CertificatePreview({ data, preview = false }) {
             <p>: {data?.["NRO CERTIFICADO"] || ""}</p>
             <p>: {data?.["MODALIDAD"] || ""}</p>
             <p>: {data?.["VIGENCIA"] || ""}</p>
-            <p className="text-capitalize" >: {data?.["EMPRESA"] || ""}</p>
+            <div className="text-capitalize text-empresa" >: {data?.["EMPRESA"] || ""}</div>
           </div>
         </div>
 
@@ -44,8 +44,10 @@ export default function CertificatePreview({ data, preview = false }) {
         </div>
 
         <div className="firma-block instr-sign-block lh-1">
-          <img src={`/assets/signatures/${(data?.["INSTRUCTOR"] || "default").replace(/\s+/g, " ").trim()}.PNG`} className="firma-img"
-            alt="firma instructor" onError={(e) => (e.target.src = "/assets/signatures/default.PNG")}/>
+          <img src={`/assets/signatures/${(data?.["INSTRUCTOR"] || "").replace(/\s+/g, " ").trim()}.PNG`} className="firma-img"
+            alt="firma instructor" 
+            // onError={(e) => (e.target.src = "/assets/signatures/default.PNG")}
+            />
           <div className="border border-secondary mx-1"></div>
           <div className="fw-semibold fs-6 pb-1">{data?.["INSTRUCTOR"] ? data["INSTRUCTOR"].toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase())
               : "Instructor"}</div>

@@ -64,13 +64,9 @@
 
 .instr-sign { 
   position: absolute; 
-  bottom: 24px; right: 40px; 
+  bottom: 24px; 
+  right: 40px; 
   width: 170px; 
-}
-
-.datos-extra {
-  display: flex;
-  justify-content: center;
 }
 
 .datos-extra p {
@@ -95,5 +91,14 @@
 
 .instr-sign-block {
   right: 30px;
+}
+
+.text-empresa {
+  width: 450px;
+  position: absolute;
+  white-space: normal;      /* permite saltos */
+  word-wrap: break-word;    /* corta palabras largas */
+  padding-left: 12px;       /* desplaza un poco el texto */
+  text-indent: -10px;       /* mantiene alineado con la primera línea */
 }
 

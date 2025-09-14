@@ -13,7 +13,7 @@ export default function SyllabusPreview({ curso, temas = [], preview = false }) 
       <div className="syllabus-content px-5 py-3 text-start">
         <div className="syllabus-header">
           <h2>Temario</h2>
-          <h3>{curso || "Nombre del Curso"}</h3>
+          <h3>{curso || ""}</h3>
         </div>
 
         <div className="syllabus-body">
