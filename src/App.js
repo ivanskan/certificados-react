@@ -9,6 +9,7 @@ import SyllabusPreview from "./components/SyllabusPreview";
 import syllabusData from "./data/syllabus.json";
 import "./Certificate.css";
 import "./Syllabus.css";
+import "./App.css"
 
 function App() {
   const [rows, setRows] = useState([]);
@@ -185,18 +186,13 @@ function App() {
           className="form-control"
           style={{ maxWidth: 400 }}
         />
-        <button onClick={generateSinglePdf} className="btn btn-success">
-          Generar PDF General
-        </button>
-        <button onClick={generateZip} className="btn btn-primary">
-          Generar ZIP PDF
-        </button>
-        <span>{status}</span>
-        {/* Contador de participantes */}
         {rows.length > 0 && (
-          <span className="badge bg-info text-dark ms-auto">
-            Participantes: {rows.length}
-          </span>
+          <>
+            <button onClick={generateSinglePdf} className="btn btn-success">Generar PDF General</button>
+            <button onClick={generateZip} className="btn btn-primary">Generar ZIP PDF</button>
+            <span>{status}</span>
+            <span className="badge bg-info text-dark ms-auto">Participantes: {rows.length}</span>
+          </>
         )}
       </div>
 
