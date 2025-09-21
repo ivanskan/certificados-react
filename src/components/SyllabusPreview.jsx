@@ -8,11 +8,11 @@ export default function SyllabusPreview({ curso, temas = [], preview = false }) 
   return (
     <div
       id={preview ? "temarioTemplate" : undefined}
-      className="cert-container row g-0 py-4 mt-2"
+      className="cert-container-reverse row g-0 py-4 mt-2"
     >
       <div className="syllabus-content px-5 py-3 text-start">
         <div className="syllabus-header">
-          <h2>Temario</h2>
+          <h2>TEMARIO</h2>
           <h3>{curso || ""}</h3>
         </div>
 

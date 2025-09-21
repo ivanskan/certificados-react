@@ -1,4 +1,23 @@
 {
+  "AISLAMIENTO DE ENERGIA": [
+    "Examen de entrada.",
+    "Objetivo.",
+    "Gestión de Riesgos de Fatalidad.",
+    "Riesgos de fatalidad.",
+    "Aislamiento - YAN-HS-STA-001.",
+    "Aislamiento de Energía - YAN-HS-STA-RO-046.",
+    "Estándar.",
+    "Gestión de Energía Almacenada 9. Barricadas y Zonas de Exclusión.",
+    "¿Qué es una barricada?",
+    "¿Qué es una zona de exclusión?",
+    "Barricada permanente.",
+    "Barricada temporal de zona de exclusión.",
+    "Barricada temporal de zona restringida.",
+    "Señalización de barricadas y etiquetas de barricadas.",
+    "Examen de salida."
+
+  ],
+
   "FLOTACION Y RESCATE EN FUENTES DE AGUA FRIA": [
     "Introducción a la seguridad en agua",
     "Uso de equipos de flotación",
@@ -7,6 +26,23 @@
     "Simulacro en campo",
     "Evaluación final"
   ],
+
+  "FRM PARA PERSONAL OPERATIVO": [
+
+  ],
+
+  "FRM PARA SUPERVISORES": [
+
+  ],
+
+  "GESTION DE LA FATIGA PARA PERSONAL OPERATIVO": [
+
+  ],
+
+  "GESTION DE RIESGOS": [
+
+  ],
+
   "CURSO DE PRIMEROS AUXILIOS": [
     "Evaluación inicial del paciente",
     "RCP básica",
@@ -56,5 +92,25 @@
     "Responsabilidad social.",
     "Protocolos de seguridad del sitio.",
     "Instalaciones del sitio."
+  ],
+
+  "INDUCCION TEMPORAL": [
+
+  ],
+
+  "MATERIALES PELIGROSOS ADVERTENCIA": [
+
+  ],
+
+  "RESCATE EN TRABAJOS CERCA A FUENTES DE AGUA": [
+
+  ],
+
+  "TRABAJOS EN ALTURA": [
+
+  ],
+
+  "TRABAJOS EN ESPACIOS CONFINADOS": [
+
   ]
 }
