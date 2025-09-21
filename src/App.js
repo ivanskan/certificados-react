@@ -7,8 +7,10 @@ import { saveAs } from "file-saver";
 import CertificatePreview from "./components/CertificatePreview";
 import SyllabusPreview from "./components/SyllabusPreview";
 import syllabusData from "./data/syllabus.json";
+import companiesMap from "./data/companies.json";
 import "./Certificate.css";
 import "./Syllabus.css";
+
 import "./App.css"
 
 function App() {
@@ -93,10 +95,27 @@ function App() {
       }
 
       // ===== Guardar en ZIP =====
-      const empresa = (row["EMPRESA"] || "SIN_EMPRESA").replace(/[^a-z0-9_ -]/gi, "_");
+      // const empresa = (row["EMPRESA"] || "SIN_EMPRESA").replace(/[^a-z0-9_ -]/gi, "_");
+      // const nombre = (row["NOMBRE"] || "SIN_NOMBRE").replace(/[^a-z0-9_ -]/gi, "_");
+      // const ab = await pdf.output("arraybuffer");
+
+      
+      // zip.folder(empresa).file(`${nombre}.pdf`, ab);
+
+      // ===== Guardar en ZIP =====
+      let empresaFull = (row["EMPRESA"] || "SIN_EMPRESA").trim().toUpperCase();
+
+      // Busca abreviación en el diccionario
+      let empresa = companiesMap[empresaFull] || empresaFull;
+
+      // Sanitiza para que no genere problemas en nombres de carpeta
+      empresa = empresa.replace(/[^a-z0-9_ -]/gi, "_");
+
       const nombre = (row["NOMBRE"] || "SIN_NOMBRE").replace(/[^a-z0-9_ -]/gi, "_");
       const ab = await pdf.output("arraybuffer");
+
       zip.folder(empresa).file(`${nombre}.pdf`, ab);
+
     }
 
     const zipBlob = await zip.generateAsync({ type: "blob" });
