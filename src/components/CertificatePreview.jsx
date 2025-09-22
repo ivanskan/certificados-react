@@ -9,7 +9,7 @@ export default function CertificatePreview({ data, preview = false }) {
       </div>
 
       <div className="col-10 right-col px-5">
-        <img src="/assets/Logo.png" className="logo" alt="ERS logo" />
+        <img src="/assets/LogoERS.png" className="logo" alt="ERS logo" />
         <p className="fs-4 fw-semibold mb-3">Otorga el presente certificado a:</p>
         <p className="fs-2 fw-bold">{data?.["NOMBRE"] || "NOMBRE PARTICIPANTE"}</p>
         <p className="fs-5 mb-3">Por haber aprobado el curso de:</p>
