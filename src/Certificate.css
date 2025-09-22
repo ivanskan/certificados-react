@@ -33,7 +33,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: url("../public/assets/watermark.png") center center no-repeat;
+  background: url("../public/assets/Watermark.png") center center no-repeat;
   background-size: 65%; /* ajusta tamaño relativo (prueba 40%, 60%) */
   z-index: 0;
 }

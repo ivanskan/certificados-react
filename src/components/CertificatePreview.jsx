@@ -5,11 +5,11 @@ export default function CertificatePreview({ data, preview = false }) {
     <div id={ preview ? "certTemplate" : undefined} className="cert-container row g-0">
 
       <div className="col-2">
-        <img src="/assets/brand.png" className="left-img" alt="brand" />
+        <img src="/assets/Brand.png" className="left-img" alt="Brand" />
       </div>
 
       <div className="col-10 right-col px-5">
-        <img src="/assets/logo.png" className="logo" alt="logo" />
+        <img src="/assets/Logo.png" className="logo" alt="ERS logo" />
         <p className="fs-4 fw-semibold mb-3">Otorga el presente certificado a:</p>
         <p className="fs-2 fw-bold">{data?.["NOMBRE"] || "NOMBRE PARTICIPANTE"}</p>
         <p className="fs-5 mb-3">Por haber aprobado el curso de:</p>
