@@ -5,7 +5,7 @@ export default function CertificatePreview({ data, preview = false }) {
     <div id={ preview ? "certTemplate" : undefined} className="cert-container row g-0">
 
       <div className="col-2">
-        <img src="/assets/Brand.png" className="left-img" alt="Brand" />
+        <img src="/assets/brand.png" className="left-img" alt="Brand" />
       </div>
 
       <div className="col-10 right-col px-5">
