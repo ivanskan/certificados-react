@@ -44,9 +44,9 @@ export default function CertificatePreview({ data, preview = false }) {
         </div>
 
         <div className="firma-block instr-sign-block lh-1">
-          <img src={`/assets/${(data?.["INSTRUCTOR"] || "").replace(/\s+/g, " ").trim()}.PNG`} className="firma-img"
+          <img src={`/assets/${(data?.["INSTRUCTOR"] || "").replace(/\s+/g, " ").trim()}.png`} className="firma-img"
             alt="firma instructor" 
-            // onError={(e) => (e.target.src = "/assets/signatures/default.PNG")}
+            // onError={(e) => (e.target.src = "/assets/signatures/default.png")}
             />
           <div className="border border-secondary mx-1"></div>
           <div className="fw-semibold fs-6 pb-1">{data?.["INSTRUCTOR"] ? data["INSTRUCTOR"] : "Instructor"}</div>
