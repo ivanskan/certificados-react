@@ -37,14 +37,14 @@ export default function CertificatePreview({ data, preview = false }) {
         </div>
 
        <div className="firma-block main-sign-block lh-1">
-          <img src="/assets/signatures/Luisa Narro León.png" className="firma-img" alt="firma gerente" />
+          <img src="/assets/Luisa Narro León.png" className="firma-img" alt="firma gerente" />
           <div className="border border-secondary mx-1"></div>
           <div className="fw-semibold fs-6 pb-1">Luisa Narro León</div>
           <span>Gerente General</span>
         </div>
 
         <div className="firma-block instr-sign-block lh-1">
-          <img src={`/assets/signatures/${(data?.["INSTRUCTOR"] || "").replace(/\s+/g, " ").trim()}.PNG`} className="firma-img"
+          <img src={`/assets/${(data?.["INSTRUCTOR"] || "").replace(/\s+/g, " ").trim()}.PNG`} className="firma-img"
             alt="firma instructor" 
             // onError={(e) => (e.target.src = "/assets/signatures/default.PNG")}
             />
