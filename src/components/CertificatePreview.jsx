@@ -18,7 +18,7 @@ export default function CertificatePreview({ data, preview = false }) {
         <p className="fs-5 fw-semibold mb-3">{data?.["TEXTO FECHA"] || "Fecha y lugar"}</p>
 
         <div className="datos-extra d-flex fs-5">
-          <div className="text-start fw-semibold lh-1">
+          <div className="text-start  lh-1">
             <p>Nro. Sesión</p>
             <p>Duración</p>
             <p>Nro. Certificado</p>
@@ -26,21 +26,21 @@ export default function CertificatePreview({ data, preview = false }) {
             <p>Vigencia</p>
             <p>Empresa</p>
           </div>
-          <div className="text-start lh-1 ms-2 fw-semibold">
-            <p>: {data?.["NRO SESION"] || ""}</p>
-            <p>: {data?.["DURACION"] || ""}</p>
-            <p>: {data?.["NRO CERTIFICADO"] || ""}</p>
-            <p>: {data?.["MODALIDAD"] || ""}</p>
-            <p>: {data?.["VIGENCIA"] || ""}</p>
-            <div className="text-capitalize text-empresa" >: {data?.["EMPRESA"] || ""}</div>
+          <div className="text-start lh-1 ms-2">
+            <p>: &nbsp;&nbsp;{data?.["NRO SESION"] || ""}</p>
+            <p>: &nbsp;&nbsp;{data?.["DURACION"] || ""}</p>
+            <p>: &nbsp;&nbsp;{data?.["NRO CERTIFICADO"] || ""}</p>
+            <p>: &nbsp;&nbsp;{data?.["MODALIDAD"] || ""}</p>
+            <p>: &nbsp;&nbsp;{data?.["VIGENCIA"] || ""}</p>
+            <div className="text-capitalize text-empresa" >: &nbsp;&nbsp;{data?.["EMPRESA"] || ""}</div>
           </div>
         </div>
 
-       <div className="firma-block main-sign-block lh-1">
+       <div className="firma-main-block main-sign-block lh-1">
           <img src="/assets/Luisa Narro León.png" className="firma-img" alt="firma gerente" />
-          <div className="border border-secondary mx-1"></div>
-          <div className="fw-semibold fs-6 pb-1">Luisa Narro León</div>
-          <span>Gerente General</span>
+          <div className="divider m-1"></div>
+          <div className="fw-bold fs-7">Luisa Narro León</div>
+          <span className="fs-7 fw-semibold">Gerente General</span>
         </div>
 
         <div className="firma-block instr-sign-block lh-1">
@@ -48,9 +48,9 @@ export default function CertificatePreview({ data, preview = false }) {
             alt="firma instructor" 
             // onError={(e) => (e.target.src = "/assets/signatures/default.png")}
             />
-          <div className="border border-secondary mx-1"></div>
-          <div className="fw-semibold fs-6 pb-1">{data?.["INSTRUCTOR"] ? data["INSTRUCTOR"] : "Instructor"}</div>
-          <span>Instructor</span>
+          <div className="divider m-1"></div>
+          <div className="fw-bold fs-7">{data?.["INSTRUCTOR"] ? data["INSTRUCTOR"] : "Instructor"}</div>
+          <span className="fs-7 fw-semibold">Instructor</span>
         </div>
 
       </div>
