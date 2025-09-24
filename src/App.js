@@ -217,7 +217,7 @@ function App() {
 
       {/* Vista previa visible solo del primero */}
       <CertificatePreview data={rows[0] || {}} />
-      {["INDUCCION GENERAL", "AISLAMIENTO DE ENERGIA"].includes(rows[0]?.["CURSO"]) && (
+      {["INDUCCION GENERAL", "GESTION DE RIESGOS"].includes(rows[0]?.["CURSO"]) && (
         <SyllabusPreview
           curso={rows[0]?.["CURSO"]}
           temas={syllabusData[rows[0]?.["CURSO"]] || []}
