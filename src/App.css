@@ -1,18 +1,32 @@
-body {
-  background: rgb(255, 255, 255);
-}
-
-.App-logo {
+@font-face {
+  font-family: "Calibri";
+  src: url("./assets/fonts/calibri.ttf") format("truetype");
   font-weight: normal;
-  display: inline-block; /* necesario para aplicar transformaciones */
-  animation: spin 3s linear infinite; /* nombre, duración, tipo y bucle */
+  font-style: normal;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@font-face {
+  font-family: "Calibri";
+  src: url("./assets/fonts/calibrib.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("./assets/fonts/calibrii.ttf") format("truetype");
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("./assets/fonts/calibriz.ttf") format("truetype");
+  font-weight: bold;
+  font-style: italic;
+}
+
+body, .cert-container {
+  font-family: "Calibri", sans-serif;
+  background: rgb(255, 255, 255);
 }

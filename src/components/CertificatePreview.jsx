@@ -32,7 +32,7 @@ export default function CertificatePreview({ data, preview = false }) {
             <p>: &nbsp;&nbsp;{data?.["NRO CERTIFICADO"] || ""}</p>
             <p>: &nbsp;&nbsp;{data?.["MODALIDAD"] || ""}</p>
             <p>: &nbsp;&nbsp;{data?.["VIGENCIA"] || ""}</p>
-            <div className="text-capitalize text-empresa" >: &nbsp;&nbsp;{data?.["EMPRESA"] || ""}</div>
+            <div className="text-empresa" >{data?.["EMPRESA"] || ""}</div>
           </div>
         </div>
 

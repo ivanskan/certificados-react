@@ -10,13 +10,13 @@ import syllabusData from "./data/syllabus.json";
 import companiesMap from "./data/companies.json";
 import "./Certificate.css";
 import "./Syllabus.css";
-
-import "./App.css"
+import "./App.css";
 
 function App() {
   const [rows, setRows] = useState([]);
   const [status, setStatus] = useState("");
 
+  // === Leer archivo Excel ===
   const handleFile = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -25,7 +25,6 @@ function App() {
     const sheet = wb.Sheets[wb.SheetNames[0]];
     const json = XLSX.utils.sheet_to_json(sheet);
 
-    // normalizamos keys
     const normalized = json.map((row) => {
       const newRow = {};
       for (const key in row) {
@@ -33,156 +32,106 @@ function App() {
       }
       return newRow;
     });
-
     setRows(normalized);
   };
 
-  // === Generar ZIP con PDFs individuales ===
-  const generateZip = async () => {
+  // === Generar ZIP clasificado + PDF general (optimizado) ===
+  const generateAllOptimized = async () => {
     if (!rows.length) return alert("Sube primero un Excel.");
     setStatus("Generando certificados...");
+
     const zip = new JSZip();
+    const pdfGeneral = new jsPDF({ orientation: "landscape", unit: "px", format: "a4" });
+    const pageW = pdfGeneral.internal.pageSize.getWidth();
+    const pageH = pdfGeneral.internal.pageSize.getHeight();
+
+    // Cursos con temario
+    const cursosConTemario = ["INDUCCION GENERAL"];
+
+    // ⚙️ Renderiza una sola vez el template del certificado
+    const certContainer = document.createElement("div");
+    certContainer.style.position = "absolute";
+    certContainer.style.left = "-9999px";
+    document.body.appendChild(certContainer);
+    certContainer.innerHTML = document.getElementById("certTemplate")?.outerHTML || "";
+
+    // ⚙️ Renderiza una sola vez el template del temario
+    const temarioContainer = document.createElement("div");
+    temarioContainer.style.position = "absolute";
+    temarioContainer.style.left = "-9999px";
+    document.body.appendChild(temarioContainer);
+    temarioContainer.innerHTML = document.getElementById("temarioTemplate")?.outerHTML || "";
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       setStatus(`Generando ${i + 1}/${rows.length}...`);
 
-      const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: "a4" });
-      const pageW = pdf.internal.pageSize.getWidth();
-      const pageH = pdf.internal.pageSize.getHeight();
+      // === Actualiza dinámicamente el contenido del certificado ===
+      const nombre = row["NOMBRE"] || "";
+      const curso = row["CURSO"] || "";
+      const empresa = row["EMPRESA"] || "";
+      const instructor = row["INSTRUCTOR"] || "";
 
-      // ===== Página 1: Certificado dinámico =====
-      const tempCertNode = document.createElement("div");
-      tempCertNode.style.position = "absolute";
-      tempCertNode.style.left = "-9999px";
-      document.body.appendChild(tempCertNode);
+      // Edita campos dinámicos del certificado
+      certContainer.querySelector(".fs-2.fw-bold").textContent = nombre;
+      certContainer.querySelector(".fs-4.fw-bold.mb-4").textContent = curso;
+      const empresaEl = certContainer.querySelector(".text-empresa");
+      if (empresaEl) empresaEl.textContent = empresa;
 
-      const { createRoot } = await import("react-dom/client");
-      const certRoot = createRoot(tempCertNode);
-      certRoot.render(<CertificatePreview data={row} preview />);
+      const instrEl = certContainer.querySelector(".instr-sign-block .fw-bold.fs-7");
+      if (instrEl) instrEl.textContent = instructor;
 
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      const certEl = document.getElementById("certTemplate");
-      const certCanvas = await html2canvas(certEl, { scale: 2 });
+      const firmaInstr = certContainer.querySelector(".instr-sign-block img");
+      if (firmaInstr) firmaInstr.src = `/assets/${(instructor || "").replace(/\s+/g, " ").trim()}.png`;
+
+      // === Renderizar certificado a imagen ===
+      const certCanvas = await html2canvas(certContainer, { scale: 2 });
       const certImg = certCanvas.toDataURL("image/png");
-      pdf.addImage(certImg, "PNG", 0, 0, pageW, pageH);
 
-      certRoot.unmount();
-      document.body.removeChild(tempCertNode);
+      // Añadir al PDF general
+      if (i > 0) pdfGeneral.addPage("a4", "landscape");
+      pdfGeneral.addImage(certImg, "PNG", 0, 0, pageW, pageH);
 
-      // ===== Página 2: Temario dinámico =====
-      const curso = row?.["CURSO"] || "";
-      const temas = syllabusData[curso] || [];
-      if (temas.length > 0) {
-        const tempNode = document.createElement("div");
-        tempNode.style.position = "absolute";
-        tempNode.style.left = "-9999px";
-        document.body.appendChild(tempNode);
+      // === Guardar PDF individual en ZIP ===
+      const pdfIndividual = new jsPDF({ orientation: "landscape", unit: "px", format: "a4" });
+      pdfIndividual.addImage(certImg, "PNG", 0, 0, pageW, pageH);
 
-        const syllabusRoot = createRoot(tempNode);
-        syllabusRoot.render(<SyllabusPreview curso={curso} temas={temas} preview />);
-
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        const temarioEl = document.getElementById("temarioTemplate");
-        const temarioCanvas = await html2canvas(temarioEl, { scale: 2 });
+      // === Si el curso tiene temario ===
+      const cursoMayus = curso.trim().toUpperCase();
+      if (cursosConTemario.includes(cursoMayus)) {
+        const temarioCanvas = await html2canvas(temarioContainer, { scale: 2 });
         const temarioImg = temarioCanvas.toDataURL("image/png");
 
-        pdf.addPage("a4", "landscape");
-        pdf.addImage(temarioImg, "PNG", 0, 0, pageW, pageH);
+        // Añadir al PDF general
+        pdfGeneral.addPage("a4", "landscape");
+        pdfGeneral.addImage(temarioImg, "PNG", 0, 0, pageW, pageH);
 
-        syllabusRoot.unmount();
-        document.body.removeChild(tempNode);
+        // Añadir también al individual
+        pdfIndividual.addPage("a4", "landscape");
+        pdfIndividual.addImage(temarioImg, "PNG", 0, 0, pageW, pageH);
       }
 
-      // ===== Guardar en ZIP =====
-      // const empresa = (row["EMPRESA"] || "SIN_EMPRESA").replace(/[^a-z0-9_ -]/gi, "_");
-      // const nombre = (row["NOMBRE"] || "SIN_NOMBRE").replace(/[^a-z0-9_ -]/gi, "_");
-      // const ab = await pdf.output("arraybuffer");
+      // Clasificación por empresa (abreviada)
+      let empresaFull = (empresa || "SIN_EMPRESA").trim().toUpperCase();
+      let empresaAbrev = companiesMap[empresaFull] || empresaFull;
+      empresaAbrev = empresaAbrev.replace(/[^a-z0-9_ -]/gi, "_");
 
-      
-      // zip.folder(empresa).file(`${nombre}.pdf`, ab);
-
-      // ===== Guardar en ZIP =====
-      let empresaFull = (row["EMPRESA"] || "SIN_EMPRESA").trim().toUpperCase();
-
-      // Busca abreviación en el diccionario
-      let empresa = companiesMap[empresaFull] || empresaFull;
-
-      // Sanitiza para que no genere problemas en nombres de carpeta
-      empresa = empresa.replace(/[^a-z0-9_ -]/gi, "_");
-
-      const nombre = (row["NOMBRE"] || "SIN_NOMBRE").replace(/[^a-z0-9_ -]/gi, "_");
-      const ab = await pdf.output("arraybuffer");
-
-      zip.folder(empresa).file(`${nombre}.pdf`, ab);
-
+      const nombreFile = (nombre || "SIN_NOMBRE").replace(/[^a-z0-9_ -]/gi, "_");
+      const ab = await pdfIndividual.output("arraybuffer");
+      zip.folder(empresaAbrev).file(`${nombreFile}.pdf`, ab);
     }
 
+    // Limpieza DOM temporal
+    document.body.removeChild(certContainer);
+    document.body.removeChild(temarioContainer);
+
+    // === Agregar el PDF general al ZIP ===
+    const abGeneral = await pdfGeneral.output("arraybuffer");
+    zip.file("CERTIFICADOS_GENERAL.pdf", abGeneral);
+
+    // === Guardar ZIP final ===
     const zipBlob = await zip.generateAsync({ type: "blob" });
     saveAs(zipBlob, "certificados.zip");
-    setStatus("Listo ✔");
-  };
-
-  // === Generar un único PDF con todos los certificados ===
-  const generateSinglePdf = async () => {
-    if (!rows.length) return alert("Sube primero un Excel.");
-    setStatus("Generando PDF único...");
-
-    const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: "a4" });
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
-      setStatus(`Generando ${i + 1}/${rows.length}...`);
-
-      // ===== Certificado dinámico =====
-      const tempCertNode = document.createElement("div");
-      tempCertNode.style.position = "absolute";
-      tempCertNode.style.left = "-9999px";
-      document.body.appendChild(tempCertNode);
-
-      const { createRoot } = await import("react-dom/client");
-      const certRoot = createRoot(tempCertNode);
-      certRoot.render(<CertificatePreview data={row} preview />);
-
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      const certEl = document.getElementById("certTemplate");
-      const certCanvas = await html2canvas(certEl, { scale: 2 });
-      const certImg = certCanvas.toDataURL("image/png");
-
-      if (i > 0) pdf.addPage("a4", "landscape");
-      pdf.addImage(certImg, "PNG", 0, 0, pageW, pageH);
-
-      certRoot.unmount();
-      document.body.removeChild(tempCertNode);
-
-      // ===== Temario dinámico =====
-      const curso = row?.["CURSO"] || "";
-      const temas = syllabusData[curso] || [];
-      if (temas.length > 0) {
-        const tempNode = document.createElement("div");
-        tempNode.style.position = "absolute";
-        tempNode.style.left = "-9999px";
-        document.body.appendChild(tempNode);
-
-        const syllabusRoot = createRoot(tempNode);
-        syllabusRoot.render(<SyllabusPreview curso={curso} temas={temas} preview />);
-
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        const temarioEl = document.getElementById("temarioTemplate");
-        const temarioCanvas = await html2canvas(temarioEl, { scale: 2 });
-        const temarioImg = temarioCanvas.toDataURL("image/png");
-
-        pdf.addPage("a4", "landscape");
-        pdf.addImage(temarioImg, "PNG", 0, 0, pageW, pageH);
-
-        syllabusRoot.unmount();
-        document.body.removeChild(tempNode);
-      }
-    }
-
-    pdf.save("CERTIFICADOS.pdf");
     setStatus("Listo ✔");
   };
 
@@ -207,17 +156,30 @@ function App() {
         />
         {rows.length > 0 && (
           <>
-            <button onClick={generateSinglePdf} className="btn btn-success">Generar PDF General</button>
-            <button onClick={generateZip} className="btn btn-primary">Generar ZIP PDF</button>
+            <button onClick={generateAllOptimized} className="btn btn-success">
+              Generar PDF + ZIP
+            </button>
             <span>{status}</span>
-            <span className="badge bg-info text-dark ms-auto">Participantes: {rows.length}</span>
+            <span className="badge bg-info text-dark ms-auto">
+              Participantes: {rows.length}
+            </span>
           </>
         )}
       </div>
 
+      {/* Previews invisibles usados como plantillas */}
+      <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
+        <CertificatePreview data={rows[0] || {}} preview />
+        <SyllabusPreview
+          curso={"INDUCCION GENERAL"}
+          temas={syllabusData["INDUCCION GENERAL"] || []}
+          preview
+        />
+      </div>
+
       {/* Vista previa visible solo del primero */}
       <CertificatePreview data={rows[0] || {}} />
-      {["INDUCCION GENERAL", "GESTION DE RIESGOS"].includes(rows[0]?.["CURSO"]) && (
+      {["INDUCCION GENERAL"].includes(rows[0]?.["CURSO"]?.toUpperCase()) && (
         <SyllabusPreview
           curso={rows[0]?.["CURSO"]}
           temas={syllabusData[rows[0]?.["CURSO"]] || []}
